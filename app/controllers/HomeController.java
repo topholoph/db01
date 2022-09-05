@@ -17,7 +17,7 @@ public class HomeController extends Controller {
 
 	public Result index() {
 
-		String ausgabe = "unbekannter Fehler";
+		String ausgabe = "Unbekannter Fehler";
 
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
