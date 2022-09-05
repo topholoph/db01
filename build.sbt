@@ -16,3 +16,4 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.41"
 )
+libraryDependencies += "com.h2database" % "h2" % "1.4.192"

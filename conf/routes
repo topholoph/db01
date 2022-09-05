@@ -9,4 +9,4 @@ GET     /                           controllers.HomeController.index()
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET 	/hello					controllers.HomeController.index()					
-GET 	/irgendwas					controllers.HomeController.irgendwas()					
+#GET 	/irgendwas					controllers.HomeController.irgendwas()					
