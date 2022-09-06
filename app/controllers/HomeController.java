@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import models.PumpState;
 import play.mvc.Controller;
 import play.mvc.Result;
 import service.Database;
+import service.HelperFunctions;
 
 /**
  * This controller contains an action to handle HTTP requests to the
@@ -16,54 +19,24 @@ import service.Database;
 public class HomeController extends Controller {
 
 	public Result index() {
+		return ok(views.html.index.render());
+	}
+
+	public Result pumpState() throws Exception {
 
 		String ausgabe = "Unbekannter Fehler";
+		// ConcurrentHashmap instead of ArrayList
+		ArrayList<PumpState> pumpList = Database.selectAllPumpStates();
+		String jsonArray;
 
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
+		ausgabe = "ArrayList erstellt: " + "\n" + pumpList + "\n";
 
-		String dbUrl = "jdbc:mysql://192.168.0.87:3306/tnsdb_1_12_5";
-		String user = "root";
-		String password = "123";
+		// Convert pumpList to JSON
+		jsonArray = HelperFunctions.arrayListToJsonArray(pumpList);
 
-		try {
-			ausgabe += "...im try block...";
-			connection = Database.getConnection(dbUrl, user, password);
-			ausgabe = "Datenbank Connection erfolgreich:";
+		ausgabe += "ArrayList zu JsonArray konvertiert: " + "\n" + jsonArray;
 
-			// 1. Create SQL for PreparedStatement using Parameters
-
-			String sql = "SELECT name, guiDescription FROM EventType WHERE EventPrioType_ID > ?";
-
-			// 2. Create a Prepared Statement
-
-			preparedStatement = connection.prepareStatement(sql);
-
-			// 3. Insert Parameter value(s) into PreparedStatement
-
-			preparedStatement.setInt(1, 10);
-
-			// 4. Execute the PreparedStatement
-
-			resultSet = preparedStatement.executeQuery();
-
-			// 5. Process the ResultSet (if applicable)
-
-			ausgabe = "gefunden: ";
-			while (resultSet.next()) {
-
-				ausgabe += resultSet.getString("benutzername") + ", ";
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			ausgabe += "ERROR:" + e.getErrorCode() + " -> " + e.getMessage();
-		} finally {
-			Database.closeResultSet(resultSet);
-			Database.closePreparedStatement(preparedStatement);
-			Database.closeConnection(connection);
-		}
+		// ConcurrentHashmap: key = db_id , value = object
 
 		return ok(ausgabe);
 
